@@ -1,4 +1,4 @@
-# Moner Bondhu🧠💙
+# Obhoy🧠💙
 
 *Your Mental Health Companion*
 

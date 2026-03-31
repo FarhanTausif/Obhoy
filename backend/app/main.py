@@ -1,14 +1,22 @@
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from app.schemas import ChatRequest, ChatResponse, ErrorResponse
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import os 
+import os
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Load model once at startup
 EMOTION_MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bert_model_corrected.pt")
@@ -20,7 +28,7 @@ intent_tokenizer = None
 
 # Initialize Chroma vector store and setup retriever 
 if 'vectorstore' not in locals():
-    persist_dir = "./chroma_db"
+    persist_dir = os.path.join(os.path.dirname(__file__), "chroma_db")
     embedding_model = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectorstore = Chroma(
         embedding_function=embedding_model,

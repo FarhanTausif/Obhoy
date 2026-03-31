@@ -20,10 +20,11 @@ def extract_text_from_pdf(pdf_path: str) -> str:
     doc.close()
     return text
 
-pdf_paths = ["/content/assests/1636-CAMHS-Anxiety-self-help-A4-leaflet.pdf",
-             "/content/assests/Fact-Sheet-What-is-Trauma-Informed-Care.pdf",
-             "/content/assests/SHP_Better-Safety-Conversations.pdf",
-             "/content/assests/mental-health-considerations.pdf"]
+_assets_dir = os.path.join(os.path.dirname(__file__), "assests")
+pdf_paths = [os.path.join(_assets_dir, "1636-CAMHS-Anxiety-self-help-A4-leaflet.pdf"),
+             os.path.join(_assets_dir, "Fact-Sheet-What-is-Trauma-Informed-Care.pdf"),
+             os.path.join(_assets_dir, "SHP_Better-Safety-Conversations.pdf"),
+             os.path.join(_assets_dir, "mental-health-considerations.pdf")]
 extracted_texts = {os.path.basename(p): extract_text_from_pdf(p) for p in pdf_paths if os.path.exists(p)}
 
 # --- Step 2: Chunking ---
@@ -51,7 +52,7 @@ print(f"Total chunks: {len(documents)}")
 # vectorstore.persist()
 
 # Set up ChromaDB knowledge base for study materials
-persist_directory = "/content/chroma_db"  # ✅ writable in Colab
+persist_directory = os.path.join(os.path.dirname(__file__), "chroma_db")
 embedding_model = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
 # Recreate vectorstore

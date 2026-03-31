@@ -122,22 +122,33 @@ export function ChatInterface() {
     setInputValue('')
     setIsTyping(true)
 
-    // Simulate AI processing delay
-    setTimeout(() => {
-      const detectedEmotion = detectEmotion(inputValue)
-      const aiResponse = generateAIResponse(inputValue, detectedEmotion, language)
-      
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: userMessage.content }),
+      })
+      const data = await res.json()
       const aiMessage = {
         id: Date.now() + 1,
-        content: aiResponse,
+        content: data.response || (language === 'bn' ? 'দুঃখিত, কিছু একটা সমস্যা হয়েছে।' : 'Sorry, something went wrong.'),
         isUser: false,
-        emotion: detectedEmotion,
         timestamp: new Date().toISOString()
       }
-
       setMessages(prev => [...prev, aiMessage])
+    } catch {
+      const errorMessage = {
+        id: Date.now() + 1,
+        content: language === 'bn'
+          ? 'দুঃখিত, সার্ভারের সাথে সংযোগ করা যাচ্ছে না। আবার চেষ্টা করুন।'
+          : 'Sorry, could not connect to the server. Please try again.',
+        isUser: false,
+        timestamp: new Date().toISOString()
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
       setIsTyping(false)
-    }, 1500 + Math.random() * 1000) // Random delay between 1.5-2.5 seconds
+    }
   }
 
   const handleKeyPress = (e) => {

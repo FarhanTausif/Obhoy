@@ -1,3 +1,12 @@
+---
+title: Obhoy Backend
+emoji: 🧠
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
 # Moner-Bondhu Backend API
 
 A sophisticated FastAPI-based backend service for the Moner-Bondhu mental health chatbot application. This service integrates emotion classification, intent detection, knowledge retrieval (RAG), and Google Gemini AI to provide intelligent, empathetic mental health support.
